@@ -6,13 +6,20 @@ export interface Props {
 }
 function ToDoItem({ taskName }: Props): JSX.Element {
   return (
-    <div className="flex flex-row p-2 box-content bg-white hover:bg-gray-100 mx-1">
-      <input className={"p-4 box-content place-self-center"} type="checkbox" />
-      <li className={"p-4 box-content"}> {taskName}</li>
-      <button>
-        <XIcon className="h-5 w-5 mx-4 text-blue-500" />
-      </button>
-    </div>
+    <li className={"todo-item-container list-none w-full"}>
+      <div className="flex flex-row p-2 box-content bg-white hover:bg-gray-100">
+        <input
+          className={
+            "w-1/12 p-4 box-content place-self-center toDoItem-checkbox"
+          }
+          type="checkbox"
+        />
+        <p className={"w-11/12 p-4 box-content text-left"}> {taskName}</p>
+        <button className={"w-1/12 mr-2 ml-auto"}>
+          <XIcon className="h-5 w-5 mx-2 text-blue-500" />
+        </button>
+      </div>
+    </li>
   );
 }
 
