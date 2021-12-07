@@ -1,7 +1,7 @@
+// @ts-nocheck
 import React from "react";
-import tasks from "../../data/tasks.json";
 
-function CheckAll() {
+function CheckAll(): JSX.Element {
   const checkAll = () => {
     const checkboxes = document.getElementsByClassName("toDoItem-checkbox");
     for (let i = 0; i < checkboxes.length; i++) {
