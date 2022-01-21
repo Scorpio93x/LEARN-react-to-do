@@ -97,7 +97,27 @@ function ToDoApp() {
     });
     setTodos(updatedTodos);
   };
+  const completeAllTodos = () => {
+    const updatedTodos = todos.map((todo: any) => {
+      todo.isComplete = true;
+      return todo;
+    });
+    setTodos(updatedTodos);
+  };
 
+  const todosFiltered = (filter: string) => {
+    if (filter === "all") {
+      return todos;
+    } else if (filter === "active") {
+      return todos.filter((todo) => !todo.isComplete);
+    } else if (filter === "completed") {
+      return todos.filter((todo) => todo.isComplete);
+    }
+  };
+
+  const remaining = () => todos.filter((todo) => !todo.isComplete).length;
+  const clearCompleted = () =>
+    setTodos([...todos].filter((todo) => !todo.isComplete));
   return (
     <div
       className={"w-full md:w-8/12 p-4 box-content bg-blue-200 shadow-2xl mb-6"}
@@ -112,6 +132,10 @@ function ToDoApp() {
           updateToDo={updateToDo}
           cancelEdit={cancelEdit}
           deleteToDo={deleteToDo}
+          clearCompleted={clearCompleted}
+          remaining={remaining}
+          completeAllTodos={completeAllTodos}
+          todosFiltered={todosFiltered}
         />
       ) : (
         <NoTodos />

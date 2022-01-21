@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { XIcon } from "@heroicons/react/solid";
 import clsx from "clsx";
+import CheckAll from "./checkAll";
+import OtherButtons from "./otherButtons";
 
 export interface Props {
   todos: any[];
@@ -9,6 +11,10 @@ export interface Props {
   updateToDo: any;
   deleteToDo: any;
   cancelEdit: any;
+  remaining: any;
+  clearCompleted: any;
+  completeAllTodos: any;
+  todosFiltered: any;
 }
 
 function TodoList({
@@ -18,13 +24,16 @@ function TodoList({
   updateToDo,
   deleteToDo,
   cancelEdit,
+  remaining,
+  clearCompleted,
+  completeAllTodos,
+  todosFiltered,
 }: Props): JSX.Element {
-  let number = 0;
-  todos.map((todo) => (!todo.isComplete ? number++ : null));
+  const [filter, setFilter] = useState("all");
   return (
     <>
       <ul className={"todo-list"}>
-        {todos.map((todo) => (
+        {todosFiltered(filter).map((todo: any) => (
           <li className={"todo-item-container list-none w-full"} key={todo.id}>
             <div className="flex flex-row p-2 box-content bg-white hover:bg-gray-100">
               <input
@@ -73,20 +82,13 @@ function TodoList({
           </li>
         ))}
       </ul>
-      <div
-        className={
-          "w-full flex flex-row p-2 border-t-2 border-gray-500 place-content-around"
-        }
-      >
-        <button
-          className={
-            "px-4 py-2 border-2 border-white rounded bg-white hover:bg-gray-100"
-          }
-        >
-          Check All
-        </button>
-        <p className={"p-2"}>{number} items remaining</p>
-      </div>
+      <CheckAll remaining={remaining} completeAllTodos={completeAllTodos} />
+      <OtherButtons
+        clearCompleted={clearCompleted}
+        todosFiltered={todosFiltered}
+        filterr={filter}
+        setFilter={setFilter}
+      />
     </>
   );
 }
