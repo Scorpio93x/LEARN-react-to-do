@@ -1,50 +1,50 @@
-import React, {
-  MutableRefObject,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { MutableRefObject, useEffect, useMemo, useRef } from "react";
 import NoTodos from "../ToDoApp/NoTodos";
 import TodoForm from "../ToDoApp/todoForm";
 import TodoList from "../ToDoApp/todoList";
+import useLocalStorage from "../../hooks/useLocalStorage";
 
 function ToDoApp() {
-  const [name, setName] = useState("");
+  // const [name, setName] = useState("");
+  const [name, setName] = useLocalStorage("name", "");
+
   const nameInput = useRef() as MutableRefObject<HTMLInputElement>;
-  const [idTodo, setIdTodo] = useState(6);
-  const [todos, setTodos] = useState([
-    {
-      id: 1,
-      taskName: "I have to do something!",
-      isComplete: true,
-      isEditing: false,
-    },
-    {
-      id: 2,
-      taskName: "I have to do something! 2",
-      isComplete: false,
-      isEditing: false,
-    },
-    {
-      id: 3,
-      taskName: "I have to do something! 3",
-      isComplete: false,
-      isEditing: false,
-    },
-    {
-      id: 4,
-      taskName: "I have to do something! 4",
-      isComplete: false,
-      isEditing: false,
-    },
-    {
-      id: 5,
-      taskName: "I have to do something 5!",
-      isComplete: false,
-      isEditing: false,
-    },
-  ]);
+
+  const [todos, setTodos] = useLocalStorage("todos", []);
+  const [idTodo, setIdTodo] = useLocalStorage("idForTodo", 1);
+  // const [idTodo, setIdTodo] = useState(6);
+  // const [todos, setTodos] = useState([
+  //   {
+  //     id: 1,
+  //     taskName: "I have to do something!",
+  //     isComplete: true,
+  //     isEditing: false,
+  //   },
+  //   {
+  //     id: 2,
+  //     taskName: "I have to do something! 2",
+  //     isComplete: false,
+  //     isEditing: false,
+  //   },
+  //   {
+  //     id: 3,
+  //     taskName: "I have to do something! 3",
+  //     isComplete: false,
+  //     isEditing: false,
+  //   },
+  //   {
+  //     id: 4,
+  //     taskName: "I have to do something! 4",
+  //     isComplete: false,
+  //     isEditing: false,
+  //   },
+  //   {
+  //     id: 5,
+  //     taskName: "I have to do something 5!",
+  //     isComplete: false,
+  //     isEditing: false,
+  //   },
+  // ]);
 
   const completeToDo = (id: number) => {
     const updatedTodos = todos.map((todo: any) => {
@@ -57,7 +57,7 @@ function ToDoApp() {
   };
 
   const deleteToDo = (id: number) =>
-    setTodos([...todos].filter((todo) => todo.id !== id));
+    setTodos([...todos].filter((todo: any) => todo.id !== id));
 
   function addTodo(todo: string) {
     setTodos([
@@ -70,7 +70,7 @@ function ToDoApp() {
       },
     ]);
 
-    setIdTodo((previousTodoId) => previousTodoId + 1);
+    setIdTodo((previousTodoId: number) => previousTodoId + 1);
   }
 
   const markAsEditing = (id: number) => {
@@ -118,9 +118,9 @@ function ToDoApp() {
     if (filter === "all") {
       return todos;
     } else if (filter === "active") {
-      return todos.filter((todo) => !todo.isComplete);
+      return todos.filter((todo: any) => !todo.isComplete);
     } else if (filter === "completed") {
-      return todos.filter((todo) => todo.isComplete);
+      return todos.filter((todo: any) => todo.isComplete);
     }
   };
 
@@ -131,20 +131,31 @@ function ToDoApp() {
   const remainingCalculation = () => {
     // console.log("Calculating remaining todos the ultra slow way...");
     // for (let index: number = 0; index < 2000000000; index++) {}
-    return todos.filter((todo) => !todo.isComplete).length;
+    return todos.filter((todo: any) => !todo.isComplete).length;
   };
   const remaining = useMemo(remainingCalculation, [todos]);
   const clearCompleted = () =>
-    setTodos([...todos].filter((todo) => !todo.isComplete));
+    setTodos([...todos].filter((todo: any) => !todo.isComplete));
+
+  const handleNameInput = (event: any) => {
+    setName(event.target.value);
+    localStorage.setItem("name", JSON.stringify(event.target.value));
+  };
 
   useEffect(() => {
     console.log("use effect running");
     nameInput.current.focus();
+    let storedName = localStorage.getItem("name");
+    if (!!storedName) {
+      setName(JSON.parse(storedName));
+    } else {
+      setName("");
+    }
 
     return function cleanup() {
       console.log("cleaning up...");
     };
-  }, [todos]);
+  }, []);
   return (
     <div
       className={"w-full md:w-8/12 p-4 box-content bg-blue-200 shadow-2xl mb-6"}
@@ -158,7 +169,7 @@ function ToDoApp() {
             placeholder="What is your name?"
             ref={nameInput}
             value={name}
-            onChange={(event) => setName(event.target.value)}
+            onChange={handleNameInput}
           />
         </form>
         {name && <p className={"p-2"}>Hi {name}</p>}
