@@ -15,7 +15,7 @@ function CheckAll({ remaining, completeAllTodos }: any): JSX.Element {
       >
         Check All
       </button>
-      <p className={"p-2"}>{remaining()} items remaining</p>
+      <p className={"p-2"}>{remaining} items remaining</p>
     </div>
   );
 }

@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, {
+  MutableRefObject,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import NoTodos from "../ToDoApp/NoTodos";
 import TodoForm from "../ToDoApp/todoForm";
 import TodoList from "../ToDoApp/todoList";
 
 function ToDoApp() {
+  const [name, setName] = useState("");
+  const nameInput = useRef() as MutableRefObject<HTMLInputElement>;
   const [idTodo, setIdTodo] = useState(6);
   const [todos, setTodos] = useState([
     {
@@ -64,6 +72,7 @@ function ToDoApp() {
 
     setIdTodo((previousTodoId) => previousTodoId + 1);
   }
+
   const markAsEditing = (id: number) => {
     const updatedTodos = todos.map((todo: any) => {
       if (todo.id === id) {
@@ -115,13 +124,45 @@ function ToDoApp() {
     }
   };
 
-  const remaining = () => todos.filter((todo) => !todo.isComplete).length;
+  //`remainingCalculation` created for purpose of using useMemo.
+  // useMemo takes function that returns certain parameter and then changes it based on dependency coming from that
+  // function.
+
+  const remainingCalculation = () => {
+    // console.log("Calculating remaining todos the ultra slow way...");
+    // for (let index: number = 0; index < 2000000000; index++) {}
+    return todos.filter((todo) => !todo.isComplete).length;
+  };
+  const remaining = useMemo(remainingCalculation, [todos]);
   const clearCompleted = () =>
     setTodos([...todos].filter((todo) => !todo.isComplete));
+
+  useEffect(() => {
+    console.log("use effect running");
+    nameInput.current.focus();
+
+    return function cleanup() {
+      console.log("cleaning up...");
+    };
+  }, [todos]);
   return (
     <div
       className={"w-full md:w-8/12 p-4 box-content bg-blue-200 shadow-2xl mb-6"}
     >
+      <div className={"m-2"}>
+        <h1>What is your name?</h1>
+        <form action="#">
+          <input
+            className={"p-4 "}
+            type="text"
+            placeholder="What is your name?"
+            ref={nameInput}
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+          />
+        </form>
+        {name && <p className={"p-2"}>Hi {name}</p>}
+      </div>
       <h1 className={"text-left my-2 text-3xl"}>ToDo App</h1>
       <TodoForm addTodo={addTodo} />
       {todos.length > 0 ? (
