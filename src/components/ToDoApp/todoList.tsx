@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { XIcon } from "@heroicons/react/solid";
 import clsx from "clsx";
 import CheckAll from "./checkAll";
@@ -18,7 +18,6 @@ export interface Props {
 }
 
 function TodoList({
-  todos,
   completeToDo,
   markAsEditing,
   updateToDo,
@@ -30,6 +29,7 @@ function TodoList({
   todosFiltered,
 }: Props): JSX.Element {
   const [filter, setFilter] = useState("all");
+
   return (
     <>
       <ul className={"todo-list"}>

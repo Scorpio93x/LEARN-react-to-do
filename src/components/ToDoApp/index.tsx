@@ -3,6 +3,7 @@ import NoTodos from "../ToDoApp/NoTodos";
 import TodoForm from "../ToDoApp/todoForm";
 import TodoList from "../ToDoApp/todoList";
 import useLocalStorage from "../../hooks/useLocalStorage";
+import { TodosContext } from "../../context/TodosContext";
 
 function ToDoApp() {
   // const [name, setName] = useState("");
@@ -58,20 +59,6 @@ function ToDoApp() {
 
   const deleteToDo = (id: number) =>
     setTodos([...todos].filter((todo: any) => todo.id !== id));
-
-  function addTodo(todo: string) {
-    setTodos([
-      ...todos,
-      {
-        id: idTodo,
-        taskName: todo,
-        isComplete: false,
-        isEditing: false,
-      },
-    ]);
-
-    setIdTodo((previousTodoId: number) => previousTodoId + 1);
-  }
 
   const markAsEditing = (id: number) => {
     const updatedTodos = todos.map((todo: any) => {
@@ -157,42 +144,46 @@ function ToDoApp() {
     };
   }, []);
   return (
-    <div
-      className={"w-full md:w-8/12 p-4 box-content bg-blue-200 shadow-2xl mb-6"}
-    >
-      <div className={"m-2"}>
-        <h1>What is your name?</h1>
-        <form action="#">
-          <input
-            className={"p-4 "}
-            type="text"
-            placeholder="What is your name?"
-            ref={nameInput}
-            value={name}
-            onChange={handleNameInput}
+    <TodosContext.Provider value={{ todos, setTodos, idTodo, setIdTodo }}>
+      <div
+        className={
+          "w-full md:w-8/12 p-4 box-content bg-blue-200 shadow-2xl mb-6"
+        }
+      >
+        <div className={"m-2"}>
+          <h1>What is your name?</h1>
+          <form action="#">
+            <input
+              className={"p-4 "}
+              type="text"
+              placeholder="What is your name?"
+              ref={nameInput}
+              value={name}
+              onChange={handleNameInput}
+            />
+          </form>
+          {name && <p className={"p-2"}>Hi {name}</p>}
+        </div>
+        <h1 className={"text-left my-2 text-3xl"}>ToDo App</h1>
+        <TodoForm />
+        {todos.length > 0 ? (
+          <TodoList
+            todos={todos}
+            completeToDo={completeToDo}
+            markAsEditing={markAsEditing}
+            updateToDo={updateToDo}
+            cancelEdit={cancelEdit}
+            deleteToDo={deleteToDo}
+            clearCompleted={clearCompleted}
+            remaining={remaining}
+            completeAllTodos={completeAllTodos}
+            todosFiltered={todosFiltered}
           />
-        </form>
-        {name && <p className={"p-2"}>Hi {name}</p>}
+        ) : (
+          <NoTodos />
+        )}
       </div>
-      <h1 className={"text-left my-2 text-3xl"}>ToDo App</h1>
-      <TodoForm addTodo={addTodo} />
-      {todos.length > 0 ? (
-        <TodoList
-          todos={todos}
-          completeToDo={completeToDo}
-          markAsEditing={markAsEditing}
-          updateToDo={updateToDo}
-          cancelEdit={cancelEdit}
-          deleteToDo={deleteToDo}
-          clearCompleted={clearCompleted}
-          remaining={remaining}
-          completeAllTodos={completeAllTodos}
-          todosFiltered={todosFiltered}
-        />
-      ) : (
-        <NoTodos />
-      )}
-    </div>
+    </TodosContext.Provider>
   );
 }
 
