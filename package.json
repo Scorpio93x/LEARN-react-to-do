@@ -23,7 +23,9 @@
     "eject": "react-scripts eject",
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test"
+    "test": "craco test",
+    "predeploy": "craco build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -46,6 +48,7 @@
   "devDependencies": {
     "autoprefixer": "^9.8.8",
     "cypress": "^9.1.1",
+    "gh-pages": "^4.0.0",
     "jest": "^26.6.0",
     "postcss": "^7.0.39",
     "prettier": "^2.5.1",
